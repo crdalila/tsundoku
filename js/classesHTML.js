@@ -1,7 +1,7 @@
 import { Tsundoku, Book } from "./classes.js";
 import { getBookByTitle, getBookBySubject, getBookByAuthor, getBookByPublisher } from "./api.js"
 import { addToLocalStorageArray, getFromLocalStorage, removeFromLocalStorageArray, findInLocalStorageArray } from "./localstorage.js";
-import { displayBook, displayFavoriteBooks } from "./functions.js";
+import { displayBook, displayFavoriteBooks, showSection } from "./functions.js";
 
 
 class BookHTML extends Book {
@@ -99,8 +99,8 @@ class BookHTML extends Book {
             if (isBookmark) {
                 this.removeFav();
                 removeFromLocalStorageArray("favorites", this);
-				const wishlistLocalStorage = getFromLocalStorage("favorites") || [];
-				displayFavoriteBooks(wishlistLocalStorage);
+                const wishlistLocalStorage = getFromLocalStorage("favorites") || [];
+                displayFavoriteBooks(wishlistLocalStorage);
             } else {
                 this.saveFav();
                 console.log(this);
@@ -125,7 +125,7 @@ class BookHTML extends Book {
         this.article.appendChild(attributesCategories);
 
         this.article.appendChild(wishButton);
-        
+
         this.article.appendChild(attributesInfoLink);
     }
 
@@ -152,7 +152,7 @@ class BookHTML extends Book {
             if (i === 0) {
                 category.textContent = "Géneros: " + this.categories[i];
             } else {
-            category.textContent += this.categories[i];
+                category.textContent += this.categories[i];
             }
             attributesCategories.append(category);
         }
@@ -191,28 +191,24 @@ class TsundokuHTML extends Tsundoku {
 
         browserDiv.setAttribute("id", "index__browser");
         browserDiv.append(browserInput, browserButton); //meter el input y botón en el div
+        index.innerHTML = "";
         index.append(logo, browserDiv, presentation); //meter el div en la section browser
 
         browserButton.addEventListener("click", async (e) => {
             await getBookByTitle(browserInput.value);
-			document.getElementById('browser').classList.remove('hidden');
-			document.getElementById('index__presentation').classList.add('hidden');
-			document.getElementById('index__browser').classList.add('hidden');
+            showSection('browser');
         });
 
-        browserInput.addEventListener("keydown", function (event){
-            let code = event.key;
-            if (code === 'Enter'){
+        browserInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
                 getBookByTitle(browserInput.value);
-				document.getElementById('browser').classList.remove('hidden');
-				document.getElementById('index__presentation').classList.add('hidden');
-				document.getElementById('index__browser').classList.add('hidden');
+                showSection('browser');
             }
         });
     }
 
 
-    initializeBrowser(){
+    initializeBrowser() {
         const browser = document.getElementById('browser');
         const tituloBrowser = document.createElement('h1');
         //boton
@@ -247,7 +243,7 @@ class TsundokuHTML extends Tsundoku {
         const disclaimer = document.createElement('p');
         //section resultados
         const resultSection = document.createElement('section');
-        
+
         //ATRIBUTOS
         tituloBrowser.textContent = "BÚSQUEDA AVANZADA";
         //boton
@@ -311,10 +307,10 @@ class TsundokuHTML extends Tsundoku {
             }
         })
 
-        browserInput.addEventListener("keydown", function (event){
+        browserInput.addEventListener("keydown", function (event) {
             let code = event.key;
             const selectedOption = document.querySelector('input[name="filter"]:checked').value;
-            if (code === 'Enter'){
+            if (code === 'Enter') {
                 if (selectedOption === "title") {
                     getBookByTitle(browserInput.value);
                 } else if (selectedOption === "publisher") {
@@ -326,10 +322,10 @@ class TsundokuHTML extends Tsundoku {
                 }
             }
         });
-        
+
     }
 
-    initializeWishlist(){
+    initializeWishlist() {
         const wishlistImg = document.createElement("img");
         wishlistImg.setAttribute("src", "./assets/wishlist-img.jpg");
         wishlistImg.setAttribute("id", "wishlist-img");
@@ -343,12 +339,12 @@ class TsundokuHTML extends Tsundoku {
         wishlistLocalStorageDiv.setAttribute("id", "wishlist__books");
         wishlistSection.append(wishlistImg, tituloWishlist, wishlistLocalStorageDiv);
         displayFavoriteBooks(wishlistLocalStorage);
-        
+
     }
 }
 
 
-export { 
+export {
     TsundokuHTML,
     BookHTML
 }
